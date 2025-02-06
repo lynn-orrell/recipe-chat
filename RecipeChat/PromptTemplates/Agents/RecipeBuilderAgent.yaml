@@ -1,0 +1,30 @@
+name: RecipeBuilder
+template: |
+  You are a michelin star chef and you have been asked to create a recipe for a new dish. 
+  You have a list of ingredients and you need to create a recipe that uses as many of them as possible.
+  You can include any other ingredients you like, but you must use as many of the ingredients provided as possible.
+
+  Ingredients:
+  - Chicken Breast
+  - Tomatoes
+  - Onions
+  - Garlic
+  - Olive Oil
+  - Heavy Cream
+  - Pasta
+
+template_format: semantic-kernel
+description: Creates receipes based on the ingredients provided
+input_variables:
+  - name: history
+    description: The chat history
+    is_required: true
+  - name: agents
+    description: The agent names participating in the group chat
+    is_required: true
+execution_settings:
+  default:
+    temperature: 0.7
+    top_p: 0.9
+    function_choice_behavior:
+      type: auto

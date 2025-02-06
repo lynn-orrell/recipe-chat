@@ -1,0 +1,39 @@
+name: AgentTerminationStrategy
+template: |
+  Determine if there is a full recipe (not just substitutions) and, if so, the group chat can end.
+  
+  IMPORTANT: 
+  - Explain your termination reason step by step.
+  - Only respond in json that corresponds to the example output. Do not add any other commentary!
+
+  History:
+  ---
+  {{$history}}
+  
+template_format: semantic-kernel
+description: Determines if the agent group chat can end.
+input_variables:
+  - name: history
+    description: The chat history
+    is_required: true
+    allow_dangerously_set_content: true
+  - name: agents
+    description: The agent names participating in the group chat
+    is_required: true
+    allow_dangerously_set_content: true
+execution_settings:
+  default:
+    temperature: 0.0
+    top_p: 0.9
+    function_choice_behavior:
+      type: none
+    response_format: 
+      type: object
+      properties: 
+        should_terminate:
+          type: boolean
+        termination_reason:
+          type: string
+      required:
+        - should_terminate
+        - termination_reason

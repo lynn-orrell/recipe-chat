@@ -1,0 +1,46 @@
+name: AgentSelectionStrategy
+template: |
+  Determine which agent takes the next turn in a conversation.
+  
+  Choose only from these agents: {{$agents}}
+
+  ALWAYS follow these rules when selecting the next agent:
+  - If asked to create a recipe, select the RecipeBuilder agent.
+  - If asked to review the recipe for gluten-free options, select the GlutenFreeReviewer agent.
+  - If asked to review the recipe for vegan options, select the VeganReviewer agent.
+
+  IMPORTANT: 
+  - Explain your selection reason step by step.
+  - Only respond in json that corresponds to the example output. Do not add any other commentary!
+
+  History:
+  ---
+  {{ $history }}
+
+template_format: semantic-kernel
+description: Selects the next agent to take a turn
+input_variables:
+  - name: history
+    description: The chat history
+    is_required: true
+    allow_dangerously_set_content: true
+  - name: agents
+    description: The agent names participating in the group chat
+    is_required: true
+    allow_dangerously_set_content: true
+execution_settings:
+  default:
+    temperature: 0.0
+    top_p: 0.9
+    function_choice_behavior:
+      type: auto
+    response_format: 
+      type: object
+      properties: 
+        next_agent:
+          type: string
+        selection_reason:
+          type: string
+      required:
+        - next_agent
+        - selection_reason
