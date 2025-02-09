@@ -24,8 +24,6 @@ bool logHttpRequests = bool.Parse(Environment.GetEnvironmentVariable("LOG_HTTP_R
 
 AppContext.SetSwitch("Microsoft.SemanticKernel.Experimental.GenAI.EnableOTelDiagnosticsSensitive", true);
 
-var builder = Host.CreateApplicationBuilder(args);
-
 ResourceBuilder resourceBuilder = ResourceBuilder.CreateDefault().AddService("RecipeChat");
 
 var traceProviderBuilder = Sdk.CreateTracerProviderBuilder()
@@ -90,28 +88,19 @@ using var loggerFactory = LoggerFactory.Create(builder =>
 
 ActivitySource recipeChatActivitySource = new("RecipeChat");
 
+var builder = Host.CreateApplicationBuilder(args);
+
 builder.Services.AddSingleton(traceProvider);
 builder.Services.AddSingleton(meterProvider);
 builder.Services.AddSingleton(loggerFactory);
 builder.Services.AddSingleton(recipeChatActivitySource);
 builder.Services.AddHttpClient();
+
+builder.Services.AddAzureOpenAIChatCompletion(deployment, endpoint, new ChainedTokenCredential(new AzureCliCredential(), new ManagedIdentityCredential()));
+// builder.Services.AddOllamaChatCompletion("llama3-groq-tool-use:8b", new Uri("http://localhost:11434"));
+builder.Services.AddKernel();
+
 builder.Services.AddHostedService<Worker>();
-
-builder.Services.AddSingleton<IKernelBuilder>(serviceProvider =>
-{
-    var kernelBuilder = Kernel.CreateBuilder();
-
-    kernelBuilder.Services.AddSingleton(traceProvider);
-    kernelBuilder.Services.AddSingleton(meterProvider);
-    kernelBuilder.Services.AddSingleton(loggerFactory);
-    kernelBuilder.Services.AddSingleton(recipeChatActivitySource);
-    kernelBuilder.Services.AddHttpClient();
-    kernelBuilder.Services.AddAzureOpenAIChatCompletion(deployment, endpoint, new ChainedTokenCredential(new AzureCliCredential(), new ManagedIdentityCredential()));
-    // kernelBuilder.Services.AddOllamaChatCompletion("llama3-groq-tool-use:8b", new Uri("http://localhost:11434"));
-    // kernelBuilder.Plugins.AddFromType<RecipeChatPlugin>();
-
-    return kernelBuilder;
-});
 
 var host = builder.Build();
 host.Run();

@@ -16,11 +16,9 @@ input_variables:
   - name: history
     description: The chat history
     is_required: true
-    allow_dangerously_set_content: true
   - name: agents
     description: The agent names participating in the group chat
     is_required: true
-    allow_dangerously_set_content: true
 execution_settings:
   default:
     temperature: 0.0

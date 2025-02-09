@@ -1,11 +1,9 @@
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using System.Text.Json;
 using FlightChat.PromptTemplates.Models;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.Agents.Chat;
-using Microsoft.SemanticKernel.Agents.History;
 using Microsoft.SemanticKernel.ChatCompletion;
 using OpenTelemetry.Trace;
 
@@ -14,15 +12,15 @@ namespace FlightChat;
 public class Worker : BackgroundService
 {
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
-    private readonly IKernelBuilder _kernelBuilder;
-    private readonly HttpClient _httpClient;
+    private readonly Kernel _kernel;
+    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ActivitySource _activitySource;
 
-    public Worker(IHostApplicationLifetime hostApplicationLifetime, IKernelBuilder kernelBuilder, IHttpClientFactory httpClientFactory, ActivitySource activitySource)
+    public Worker(IHostApplicationLifetime hostApplicationLifetime, Kernel kernel, IHttpClientFactory httpClientFactory, ActivitySource activitySource)
     {
         _hostApplicationLifetime = hostApplicationLifetime;
-        _kernelBuilder = kernelBuilder;
-        _httpClient = httpClientFactory.CreateClient();
+        _kernel = kernel;
+        _httpClientFactory = httpClientFactory;
         _activitySource = activitySource;
     }
 
@@ -30,15 +28,12 @@ public class Worker : BackgroundService
     {
         using var activity = _activitySource.StartActivity("ExecuteAsync");
 
-        var kernel = _kernelBuilder.Build();
+        ChatCompletionAgent recipeBuilderAgent = await CreateChatCompletionAgentAsync("PromptTemplates/Agents/RecipeBuilderAgent.yaml", _kernel);
+        ChatCompletionAgent glutenFreeReviewerAgent = await CreateChatCompletionAgentAsync("PromptTemplates/Agents/GlutenFreeReviewerAgent.yaml", _kernel);
+        ChatCompletionAgent veganReviewerAgent = await CreateChatCompletionAgentAsync("PromptTemplates/Agents/VeganReviewerAgent.yaml", _kernel);
 
-        ChatCompletionAgent recipeBuilderAgent = await CreateChatCompletionAgentAsync("PromptTemplates/Agents/RecipeBuilderAgent.yaml", kernel);
-        ChatCompletionAgent glutenFreeReviewerAgent = await CreateChatCompletionAgentAsync("PromptTemplates/Agents/GlutenFreeReviewerAgent.yaml", kernel);
-        ChatCompletionAgent veganReviewerAgent = await CreateChatCompletionAgentAsync("PromptTemplates/Agents/VeganReviewerAgent.yaml", kernel);
-        // ChatCompletionAgent dataVisualizerReviewerAgent = await CreateChatCompletionAgentAsync("PromptTemplates/Agents/DataVisualizerReviewerAgent.yaml", kernel);
-
-        KernelFunctionSelectionStrategy selectionStrategy = await CreateSelectionStrategy("PromptTemplates/Strategies/AgentSelectionStrategy.yaml", kernel);
-        KernelFunctionTerminationStrategy terminationStrategy = await CreateTerminationStrategy("PromptTemplates/Strategies/AgentTerminationStrategy.yaml", kernel, new[] 
+        KernelFunctionSelectionStrategy selectionStrategy = await CreateSelectionStrategy("PromptTemplates/Strategies/AgentSelectionStrategy.yaml", _kernel);
+        KernelFunctionTerminationStrategy terminationStrategy = await CreateTerminationStrategy("PromptTemplates/Strategies/AgentTerminationStrategy.yaml", _kernel, new[] 
         { 
             recipeBuilderAgent,
             glutenFreeReviewerAgent,
@@ -54,8 +49,8 @@ public class Worker : BackgroundService
             }
         };
 
-        await AddChatMessageAsync(chat, "Please create a main dish from the ingredients");
-        await AddChatMessageAsync(chat, "Is this gluten free?");
+        await AddChatMessageAsync(chat, "Please create a main dish from the following ingredients: Chicken Breast, Tomatoes, Onions, Garlic, Olive Oil, Heavy Cream, Pasta");
+        await AddChatMessageAsync(chat, "I'm allergic to gluten");
         await AddChatMessageAsync(chat, "Can I also get a vegan friendly version?");
 
         _hostApplicationLifetime.StopApplication();

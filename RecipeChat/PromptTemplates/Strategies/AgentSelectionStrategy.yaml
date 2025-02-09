@@ -5,6 +5,7 @@ template: |
   Choose only from these agents: {{$agents}}
 
   ALWAYS follow these rules when selecting the next agent:
+  - An agent can only take a turn if they have not taken the last turn.
   - If asked to create a recipe, select the RecipeBuilder agent.
   - If asked to review the recipe for gluten-free options, select the GlutenFreeReviewer agent.
   - If asked to review the recipe for vegan options, select the VeganReviewer agent.
@@ -27,7 +28,6 @@ input_variables:
   - name: agents
     description: The agent names participating in the group chat
     is_required: true
-    allow_dangerously_set_content: true
 execution_settings:
   default:
     temperature: 0.0
