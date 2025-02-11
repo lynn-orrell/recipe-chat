@@ -1,13 +1,12 @@
 using System.Diagnostics;
 using System.Text.Json;
-using FlightChat.PromptTemplates.Models;
+using RecipeChat.PromptTemplates.Models;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.Agents.Chat;
 using Microsoft.SemanticKernel.ChatCompletion;
-using OpenTelemetry.Trace;
 
-namespace FlightChat;
+namespace RecipeChat;
 
 public class Worker : BackgroundService
 {

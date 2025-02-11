@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Azure.Identity;
 using dotenv.net;
-using FlightChat;
+using RecipeChat;
 using Microsoft.SemanticKernel;
 using OpenTelemetry;
 using OpenTelemetry.Logs;

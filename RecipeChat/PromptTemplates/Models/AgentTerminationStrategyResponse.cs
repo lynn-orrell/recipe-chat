@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace FlightChat.PromptTemplates.Models
+namespace RecipeChat.PromptTemplates.Models
 {
     public class AgentTerminationStrategyResponse
     {
