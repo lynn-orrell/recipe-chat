@@ -9,8 +9,6 @@ template: |
   - The GlutenFreeReviewer agent is responsible for suggesting gluten-free substitutions.
   - The VeganReviewer agent is responsible for suggesting vegan substitutions.
 
-  Do not select an agent to take a turn if it's not strictly necessary.
-
   History:
   ---
   {{ $history }}
