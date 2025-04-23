@@ -30,8 +30,7 @@ var traceProviderBuilder = Sdk.CreateTracerProviderBuilder()
                               .SetResourceBuilder(resourceBuilder)
                               .AddSource("RecipeChat")
                               .AddSource("Microsoft.SemanticKernel*")
-                              .AddOtlpExporter(options => options.Endpoint = otelEndpoint)
-                              .AddConsoleExporter();
+                              .AddOtlpExporter(options => options.Endpoint = otelEndpoint);
 
 if (logHttpRequests)
 {
@@ -74,31 +73,27 @@ using var meterProvider = Sdk.CreateMeterProviderBuilder()
                              .AddOtlpExporter(options => options.Endpoint = otelEndpoint)
                              .Build();
 
-using var loggerFactory = LoggerFactory.Create(builder =>
-{
-    builder.AddOpenTelemetry(options =>
-    {
-        options.SetResourceBuilder(resourceBuilder);
-        options.AddOtlpExporter(options => options.Endpoint = otelEndpoint);
-        options.IncludeFormattedMessage = true;
-        options.IncludeScopes = true;
-    });
-    builder.SetMinimumLevel(LogLevel.Information);
-});
-
 ActivitySource recipeChatActivitySource = new("RecipeChat");
 
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddSingleton(traceProvider);
 builder.Services.AddSingleton(meterProvider);
-builder.Services.AddSingleton(loggerFactory);
 builder.Services.AddSingleton(recipeChatActivitySource);
 builder.Services.AddHttpClient();
+builder.Services.AddLogging(loggerFactory => 
+{
+    loggerFactory.AddOpenTelemetry(options =>
+    {
+        options.SetResourceBuilder(resourceBuilder);
+        options.AddOtlpExporter(options => options.Endpoint = otelEndpoint);
+    });
+    loggerFactory.AddFilter<OpenTelemetryLoggerProvider>("*", LogLevel.Information);
+});
 
 builder.Services.AddAzureOpenAIChatCompletion(deployment, endpoint, new ChainedTokenCredential(new AzureCliCredential(), new ManagedIdentityCredential()));
 // builder.Services.AddOllamaChatCompletion("llama3-groq-tool-use:8b", new Uri("http://localhost:11434"));
-builder.Services.AddKernel();
+var kernelBuilder = builder.Services.AddKernel();
 
 builder.Services.AddHostedService<Worker>();
 

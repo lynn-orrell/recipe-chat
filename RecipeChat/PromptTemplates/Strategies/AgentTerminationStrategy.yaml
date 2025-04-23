@@ -1,10 +1,11 @@
 name: AgentTerminationStrategy
 template: |
-  Determine if there is a full recipe (not just substitutions) and, if so, the group chat can end.
-  
-  IMPORTANT: 
-  - Explain your termination reason step by step.
-  - Only respond in json that corresponds to the example output. Do not add any other commentary!
+  This chat should terminate for any of the following reasons:
+    1) When the latest response is a complete recipe with ingredients and instructions that satisfies any substitutions.
+    2) When the assistant is asking a question to the user or the assistant is waiting for a response from the user.
+    3) When the conversation is no longer on the topic of recipes.
+
+  Explain your termination reason step by step.
 
   History:
   ---
@@ -22,11 +23,12 @@ input_variables:
 execution_settings:
   default:
     temperature: 0.0
-    top_p: 0.9
+    top_p: 0.0
     function_choice_behavior:
       type: none
     response_format: 
       type: object
+      strict: true
       properties: 
         should_terminate:
           type: boolean

@@ -10,7 +10,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/RecipeChat/bin/debug/net8.0/RecipeChat.dll",
             "cwd": "${workspaceFolder}/RecipeChat",
-            "preLaunchTask": "dotnet: build"
+            "preLaunchTask": "dotnet: build",
+            "console": "integratedTerminal"
         }
     ]
 }

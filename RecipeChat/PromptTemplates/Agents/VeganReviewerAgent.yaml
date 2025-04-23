@@ -1,15 +1,32 @@
 name: VeganReviewer
 template: |
   Your job is to review recipes for ingredients that may not be vegan friendly.
-  If you find any non-vegan ingredients, please suggest alternatives for those items and ask for a new recipe to be created with the full list of ingredients (including the substitutes).
-
-  Don't create the new recipe yourself, just ask for it to be created.
+  Only suggest substitutions for ingredients that are non-vegan.
+  If the recipe is vegan, do not suggest any substitutions.
 
 template_format: semantic-kernel
 description: Reviews the results of a recipe for non-vegan ingredients.
 execution_settings:
   default:
-    temperature: 0.7
+    temperature: 0.4
     top_p: 0.9
     function_choice_behavior:
       type: none
+    response_format: 
+      type: object
+      strict: true
+      properties:
+        is_recipe_vegan:
+          type: boolean 
+        substitutions:
+          type: array
+          items:
+            type: object
+            properties:
+              ingredient:
+                type: string
+              substitution:
+                type: string
+      required:
+        - is_recipe_vegan
+        - substitutions

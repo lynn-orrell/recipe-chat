@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <NoWarn>$(NoWarn);SKEXP0010;SKEXP0110;OPENAI001;SKEXP0001;SKEXP0070;</NoWarn>
+    <NoWarn>$(NoWarn);SKEXP0010;SKEXP0110;OPENAI001;SKEXP0001;SKEXP0040;SKEXP0070;</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +13,8 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
-    <!-- <PackageReference Include="Microsoft.SemanticKernel" Version="1.33.0" />
+    <!-- <PackageReference Include="Microsoft.SemanticKernel.Plugins.OpenApi" Version="1.36.1" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.33.0" />
     <PackageReference Include="Microsoft.SemanticKernel.Agents.Abstractions" Version="1.33.0-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.33.0-alpha" />
     <PackageReference Include="Microsoft.SemanticKernel.Agents.OpenAI" Version="1.33.0-alpha" />
@@ -31,6 +32,7 @@
     <ProjectReference Include="..\..\..\..\microsoft\semantic-kernel\dotnet\src\Agents\OpenAI\Agents.OpenAI.csproj" />
     <ProjectReference Include="..\..\..\..\microsoft\semantic-kernel\dotnet\src\Connectors\Connectors.AzureOpenAI\Connectors.AzureOpenAI.csproj" />
     <ProjectReference Include="..\..\..\..\microsoft\semantic-kernel\dotnet\src\Connectors\Connectors.Ollama\Connectors.Ollama.csproj" />
+    <ProjectReference Include="..\..\..\..\microsoft\semantic-kernel\dotnet\src\Functions\Functions.OpenApi\Functions.OpenApi.csproj" />
     <ProjectReference Include="..\..\..\..\microsoft\semantic-kernel\dotnet\src\Functions\Functions.Yaml\Functions.Yaml.csproj" />
   </ItemGroup>
 
