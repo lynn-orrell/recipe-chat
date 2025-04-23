@@ -5,7 +5,7 @@ template: |
   Choose only from these agents: {{$agents}}
 
   The agents responsibilities are as follows:
-  - The RecipeBuilder agent is responsible for creating the recipe and for altering the recipe if any substitutions are suggested.
+  - The RecipeBuilder agent is responsible for creating the recipe and for recreating the recipe when substitutions are suggested.
   - The GlutenFreeReviewer agent is responsible for suggesting gluten-free substitutions.
   - The VeganReviewer agent is responsible for suggesting vegan substitutions.
 
