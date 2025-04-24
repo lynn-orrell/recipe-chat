@@ -1,0 +1,16 @@
+@if (!OperatingSystem.IsBrowser())
+{   
+    <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Connecting to chat...</p>
+    </div>
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

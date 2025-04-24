@@ -2,6 +2,7 @@ name: AgentSelectionStrategy
 template: |
   Determine which agent takes the next turn in a conversation. Explain your selection reason step by step.
   
+  Only choose one agent at a time.
   Choose only from these agents: {{$agents}}
 
   The agents responsibilities are as follows:

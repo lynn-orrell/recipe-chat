@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeChat", "RecipeChat\RecipeChat.csproj", "{C60FC298-3C3F-4FC9-A75C-BD13A20994E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeChat.Console", "RecipeChat.Console\RecipeChat.Console.csproj", "{C60FC298-3C3F-4FC9-A75C-BD13A20994E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeChat.GroupChat", "RecipeChat.GroupChat\RecipeChat.GroupChat.csproj", "{F2935BDF-969D-49CD-8CEA-31D05CA19D47}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RecipeChat.Web", "RecipeChat.Web", "{DA723F93-74F5-43AC-86F3-8CDDA2CD887A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeChat.Web", "RecipeChat.Web\RecipeChat.Web\RecipeChat.Web.csproj", "{1B6A89FA-6DD2-49F0-A13D-C498CDB49580}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeChat.Web.Client", "RecipeChat.Web\RecipeChat.Web.Client\RecipeChat.Web.Client.csproj", "{6C28356A-6591-4336-A721-80DD7476CAD7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeChat.Web.Shared", "RecipeChat.Web\RecipeChat.Web.Shared\RecipeChat.Web.Shared.csproj", "{DDE9B717-2599-4708-BCA2-1EA892912111}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,8 +29,29 @@ Global
 		{C60FC298-3C3F-4FC9-A75C-BD13A20994E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C60FC298-3C3F-4FC9-A75C-BD13A20994E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C60FC298-3C3F-4FC9-A75C-BD13A20994E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2935BDF-969D-49CD-8CEA-31D05CA19D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2935BDF-969D-49CD-8CEA-31D05CA19D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2935BDF-969D-49CD-8CEA-31D05CA19D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2935BDF-969D-49CD-8CEA-31D05CA19D47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6A89FA-6DD2-49F0-A13D-C498CDB49580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6A89FA-6DD2-49F0-A13D-C498CDB49580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6A89FA-6DD2-49F0-A13D-C498CDB49580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6A89FA-6DD2-49F0-A13D-C498CDB49580}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C28356A-6591-4336-A721-80DD7476CAD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C28356A-6591-4336-A721-80DD7476CAD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C28356A-6591-4336-A721-80DD7476CAD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C28356A-6591-4336-A721-80DD7476CAD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDE9B717-2599-4708-BCA2-1EA892912111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDE9B717-2599-4708-BCA2-1EA892912111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDE9B717-2599-4708-BCA2-1EA892912111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDE9B717-2599-4708-BCA2-1EA892912111}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1B6A89FA-6DD2-49F0-A13D-C498CDB49580} = {DA723F93-74F5-43AC-86F3-8CDDA2CD887A}
+		{6C28356A-6591-4336-A721-80DD7476CAD7} = {DA723F93-74F5-43AC-86F3-8CDDA2CD887A}
+		{DDE9B717-2599-4708-BCA2-1EA892912111} = {DA723F93-74F5-43AC-86F3-8CDDA2CD887A}
 	EndGlobalSection
 EndGlobal

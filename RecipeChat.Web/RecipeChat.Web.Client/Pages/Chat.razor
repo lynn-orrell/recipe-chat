@@ -1,0 +1,246 @@
+@page "/"
+@rendermode InteractiveWebAssembly
+@using RecipeChat.Web.Client.Layout
+@using RecipeChat.Web.Shared.Models
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.AI
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<script>
+function scrollToBottom() {
+    const chatContainer = document.getElementById("conversation");
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+}
+
+function renderMarkdown(elementId, markdownContent) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = marked.parse(markdownContent);
+    }
+}
+
+function focusTextarea() {
+    const textarea = document.querySelector("textarea.input-lg");
+    if (textarea) {
+        textarea.focus();
+    }
+}
+</script>
+<PageTitle>Chat</PageTitle>
+
+<ContentLoading>
+    <div class="chat-page">
+        
+        <div class="info-boxes">
+            <div class="info-box @(isRecipeBuilderActive ? "glow" : "")">
+                <div class="info-box-title">Recipe Builder</div>
+                <div class="info-box-description">
+                    The Recipe Builder Agent is responsible for creating recipes.  If needed, this agent will take direction from the Gluten Free and Vegan Reviewers to make ingredient adjustments to satisfy dietary restrictions.
+                </div>
+            </div>
+            <div class="info-box @(isGlutenFreeReviewerActive ? "glow" : "")">
+                <div class="info-box-title">Gluten Free Reviewer</div>
+                <div class="info-box-description">
+                    The Gluten Free Reviewer Agent is responsible for reviewing the recipe and making adjustments to ensure it is gluten free.  If needed, this agent will make suggestions to the Recipe Builder Agent to make ingredient adjustments.
+                </div>
+            </div>
+            <div class="info-box @(isVeganReviewerActive ? "glow" : "")">
+                <div class="info-box-title">Vegan Reviewer</div>
+                <div class="info-box-description">
+                    The Vegan Reviewer Agent is responsible for reviewing the recipe and making adjustments to ensure it is vegan.  If needed, this agent will make suggestions to the Recipe Builder Agent to make ingredient adjustments.
+                </div>
+            </div>
+        </div>
+
+        <div id="conversation" class="chat-container">
+            @foreach (var message in messages)
+            {
+                if(message.Value.NotificationType == NotificationType.SpeakerChange)
+                {
+                    <div class="chat-bubble speakerchange">
+                        <strong>@message.Value.Text</strong> will now take a turn to speak.                    
+                    </div>
+                }
+                else if (message.Value.NotificationType == NotificationType.AgentGroupChatTerminationUpdate)
+                {
+                    <div class="chat-bubble agentgroupchatterminationupdate">
+                        @message.Value.Text
+                    </div>
+                }
+                else {
+                    <div id="@message.Value.MessageId" class="chat-bubble @message.Value.NotificationType.ToString().ToLower()">
+                        @message.Value.Text
+                    </div>
+                }
+            }
+        </div>
+
+        <form class="chat-message" @onsubmit="HandleSubmit">
+            <textarea class="input-lg" placeholder="Talk to me!" @bind-value="@messageInput" @bind-value:event="oninput" @onkeydown="HandleKeyDown" disabled="@isAgentProcessing"></textarea>
+            <button type="submit" class="btn btn-default" disabled="@(!IsConnected || isAgentProcessing)">Send</button>
+        </form>
+    </div>
+</ContentLoading>
+
+@code {
+    private HubConnection? hubConnection;
+    private Dictionary<string, ConversationNotification> messages = [];
+    private string? messageInput;
+    private bool shouldScrollToBottom = true;
+    private string? renderMarkdownId;
+    private bool isConnected = false;
+    private bool isAgentProcessing = false;
+    private bool isRecipeBuilderActive = false;
+    private bool isGlutenFreeReviewerActive = false;
+    private bool isVeganReviewerActive = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(Navigation.ToAbsoluteUri("/chathub"))
+        .Build();
+
+        hubConnection.On<ConversationNotification>("ReceiveMessage", async (conversationNotification) =>
+        {
+            if (string.IsNullOrEmpty(conversationNotification.MessageId) || string.IsNullOrEmpty(conversationNotification.Text))
+            {
+                return;
+            }
+
+            if(messages.ContainsKey(conversationNotification.MessageId))
+            {
+                messages[conversationNotification.MessageId].AddTextChunk(conversationNotification.Text);
+            }
+            else
+            {
+                messages.Add(conversationNotification.MessageId, conversationNotification);
+            }
+            
+            shouldScrollToBottom = true;
+            renderMarkdownId = conversationNotification.MessageId;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<ConversationNotification>("SpeakerChange", async (conversationNotification) =>
+        {
+            if (conversationNotification != null && string.IsNullOrEmpty(conversationNotification.Text))
+            {
+                return;
+            }
+
+            ToggleGlow(conversationNotification!.Text);
+            messages.Add(Guid.NewGuid().ToString(), conversationNotification);
+            
+            shouldScrollToBottom = true;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<ConversationNotification>("AgentGroupChatTerminationUpdate", async (conversationNotification) =>
+        {
+            if (conversationNotification != null && string.IsNullOrEmpty(conversationNotification.Text))
+            {
+                return;
+            }
+
+            messages.Add(Guid.NewGuid().ToString(), conversationNotification!);
+            
+            shouldScrollToBottom = true;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<ConversationNotification>("AgentGroupChatComplete", async (conversationNotification) =>
+        {
+            isAgentProcessing = false;
+            GlowOff();
+            await InvokeAsync(StateHasChanged);
+            await JSRuntime.InvokeVoidAsync("focusTextarea");
+        });
+
+        await hubConnection.StartAsync();        
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (shouldScrollToBottom)
+        {
+            shouldScrollToBottom = false;
+            await JSRuntime.InvokeVoidAsync("scrollToBottom");
+        }
+
+        if(!string.IsNullOrEmpty(renderMarkdownId))
+        {
+            await JSRuntime.InvokeVoidAsync("renderMarkdown", renderMarkdownId, messages[renderMarkdownId].Text);
+            renderMarkdownId = string.Empty;
+        }
+    }
+
+    private async Task SendAsync(string message)
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", message);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (!string.IsNullOrWhiteSpace(messageInput))
+        {
+            isAgentProcessing = true;
+            await SendAsync(messageInput);
+            var messageId = Guid.NewGuid().ToString();
+            messages.Add(messageId, new ConversationNotification(NotificationType.UserMessage, messageId, messageInput));
+            messageInput = string.Empty; // Clear the input after sending
+
+            shouldScrollToBottom = true;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" && !e.ShiftKey) // Check if "Enter" is pressed without "Shift" to allow for newlines
+        {
+            await HandleSubmit();
+        }
+    }
+
+    private void ToggleGlow(string boxName)
+    {
+        GlowOff();
+
+        switch (boxName)
+        {
+            case "RecipeBuilder":
+                isRecipeBuilderActive = !isRecipeBuilderActive;
+                break;
+            case "GlutenFreeReviewer":
+                isGlutenFreeReviewerActive = !isGlutenFreeReviewerActive;
+                break;
+            case "VeganReviewer":
+                isVeganReviewerActive = !isVeganReviewerActive;
+                break;
+        }
+    }
+
+    private void GlowOff()
+    {
+        isRecipeBuilderActive = false;
+        isGlutenFreeReviewerActive = false;
+        isVeganReviewerActive = false;
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

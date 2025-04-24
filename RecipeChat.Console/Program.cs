@@ -8,6 +8,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using RecipeChat.GroupChat;
 
 DotEnv.Fluent().WithProbeForEnv().Load();
 
@@ -81,7 +82,7 @@ builder.Services.AddSingleton(traceProvider);
 builder.Services.AddSingleton(meterProvider);
 builder.Services.AddSingleton(recipeChatActivitySource);
 builder.Services.AddHttpClient();
-builder.Services.AddLogging(loggerFactory => 
+builder.Services.AddLogging(loggerFactory =>
 {
     loggerFactory.AddOpenTelemetry(options =>
     {
@@ -90,6 +91,7 @@ builder.Services.AddLogging(loggerFactory =>
     });
     loggerFactory.AddFilter<OpenTelemetryLoggerProvider>("*", LogLevel.Information);
 });
+builder.Services.AddTransient<RecipeGroupChat>();
 
 builder.Services.AddAzureOpenAIChatCompletion(deployment, endpoint, new ChainedTokenCredential(new AzureCliCredential(), new ManagedIdentityCredential()));
 // builder.Services.AddOllamaChatCompletion("llama3-groq-tool-use:8b", new Uri("http://localhost:11434"));
