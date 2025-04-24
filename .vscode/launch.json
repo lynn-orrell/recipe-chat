@@ -5,13 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C#: RecipeChat Debug",
+            "name": "C#: RecipeChat.Console Debug",
             "type": "coreclr",
             "request": "launch",
-            "program": "${workspaceFolder}/RecipeChat/bin/debug/net8.0/RecipeChat.dll",
-            "cwd": "${workspaceFolder}/RecipeChat",
+            "program": "${workspaceFolder}/RecipeChat.Console/bin/debug/net9.0/RecipeChat.Console.dll",
+            "cwd": "${workspaceFolder}/RecipeChat.Console",
             "preLaunchTask": "dotnet: build",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "C#: RecipeChat.Web Debug",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/RecipeChat.Web/RecipeChat.Web/bin/debug/net9.0/RecipeChat.Web.dll",
+            "args": [ "--urls", "http://localhost:7194" ],
+            "cwd": "${workspaceFolder}/RecipeChat.Web/RecipeChat.Web",
+            "preLaunchTask": "Build RecipeChat.Web",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
         }
     ]
 }

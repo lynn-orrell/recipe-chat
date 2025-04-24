@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build RecipeChat.Web",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+          "build",
+          "${workspaceFolder}/RecipeChat.Web/RecipeChat.Web/RecipeChat.Web.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+      }
+    ]
+  }

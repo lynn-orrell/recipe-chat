@@ -1,0 +1,167 @@
+/* Main container for the chat page */
+.chat-page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+}
+
+/* Chat container styling */
+.chat-container {
+    flex: 1 0 0; /* Take up all available vertical space */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    padding: 10px;
+    background-color: #f9f9f9; /* Light background for the chat area */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between chat bubbles */
+}
+
+/* Auto-scroll to the bottom when new messages are added */
+.chat-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background-color: #f9f9f9;
+}
+
+/* Chat bubble styling */
+.chat-bubble {
+    max-width: 70%; /* Limit bubble width */
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word; /* Ensure long words wrap */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* User messages (align right) */
+.chat-bubble.usermessage {
+    align-self: flex-end;
+    background-color: #007bff; /* Blue background for user */
+    color: white; /* White text for contrast */
+    border-top-right-radius: 0; /* Flat corner */
+}
+
+/* Assistant messages (align left) */
+.chat-bubble.assistantmessage {
+    align-self: flex-start;
+    background-color: #e5e5ea; /* Light gray background for assistant */
+    color: black; /* Black text for contrast */
+    border-top-left-radius: 0; /* Flat corner */
+}
+
+/* Assistant messages (align left) */
+.chat-bubble.speakerchange {
+    max-width: 100%;
+    width: 100%;
+    background-color: #a4e3c4; /* Light gray background for assistant */
+    text-align: center;
+    color: black; /* Black text for contrast */
+}
+
+/* Assistant messages (align left) */
+.chat-bubble.agentgroupchatterminationupdate {
+    max-width: 100%;
+    width: 100%;
+    background-color: #abc2f3; /* Light gray background for assistant */
+    text-align: center;
+    color: black; /* Black text for contrast */
+}
+
+/* Textarea container pinned to the bottom */
+.chat-message {
+    display: flex;
+    margin-top: 15px;
+    background-color: #fff;
+    border-top: 1px solid #ddd; /* Add a border to separate from chat */
+    position: sticky; /* Stick to the bottom of the screen */
+    bottom: 0;
+    z-index: 10; /* Ensure it stays above other elements */
+}
+
+/* Textarea container pinned to the bottom */
+textarea.input-lg {
+    width: 100%; /* Full width of the container */
+    height: 100px; /* Set a comfortable height */
+    padding: 10px; /* Add padding for better usability */
+    font-size: 16px; /* Increase font size for readability */
+    border: 1px solid #ccc; /* Light border for a clean look */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    resize: none; /* Disable resizing */
+    outline: none; /* Remove default focus outline */
+    margin-top: auto; /* Push the textarea to the bottom */
+}
+
+textarea.input-lg:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a glow effect */
+}
+
+button.btn {
+    margin: 10px; /* Add spacing above the button */
+    padding: 10px 20px; /* Adjust padding for a better click area */
+    font-size: 16px; /* Match font size with the textarea */
+    background-color: #007bff; /* Primary button color */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+button.btn:disabled {
+    background-color: #ccc; /* Gray out when disabled */
+    cursor: not-allowed; /* Show not-allowed cursor */
+}
+
+button.btn:hover:not(:disabled) {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Styling for the container holding the boxes */
+.info-boxes {
+    display: flex;
+    justify-content: space-between; /* Space out the boxes evenly */
+    margin-bottom: 10px; /* Add spacing below the boxes */
+}
+
+/* Styling for each individual box */
+.info-box {
+    flex: 1; /* Make all boxes equal in width */
+    margin: 0 5px; /* Add spacing between the boxes */
+    padding: 10px; /* Add padding inside the box */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 8px; /* Rounded corners */
+    text-align: center; /* Center the text inside the box */
+    background-color: #f9f9f9; /* Light background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern look */
+}
+
+.info-box .info-box-title {
+    font-size: 18px; /* Larger font for the title */
+    font-weight: bold; /* Bold title */
+    margin-bottom: 5px; /* Space below the title */
+}
+
+.info-box .info-box-description {
+    font-size: 14px; /* Smaller font for the description */
+    text-align: left; /* Align text to the left */
+}
+
+/* Glow effect */
+.info-box.glow {
+    border-color: #007bff; /* Blue border for the glow */
+    box-shadow: 0 0 10px 2px #007bff; /* Blue glow effect */
+}
