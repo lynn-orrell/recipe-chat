@@ -28,4 +28,5 @@
   <ItemGroup>
     <ProjectReference Include="..\RecipeChat.GroupChat\RecipeChat.GroupChat.csproj" />
   </ItemGroup>
+
 </Project>
